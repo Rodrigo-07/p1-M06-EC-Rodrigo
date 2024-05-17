@@ -33,11 +33,11 @@ def cli(args=None):
         movTurtle.mov_deque_manager()
 
     # O spin do TurtleControler serve para manter o programa rodando até que seja finalizado
-    rclpy.spin(movTurtle)
+    # rclpy.spin(movTurtle)
 
-    # Limpar os nós
-    movTurtle.destroy_node()
-    rclpy.shutdown()
+    # # Limpar os nós
+    # movTurtle.destroy_node()
+    # rclpy.shutdown()
 
 class MovTurtle(Node):
     # Inicializar a classe
@@ -62,14 +62,14 @@ class MovTurtle(Node):
         
         # Publicar a mensagem
         self.publisher_mov.publish(msg)
-        self.get_logger().info('Tartaruga movida')
+        self.get_logger().info(f'Tartaruga movida para {vx}, {vy}, {theta}')
 
         return True
     
-
     # Movimentar a tartaruga por um tempo
     def mov_direction_timer(self, vx, vy, theta, tempo):
         tempo = float(tempo)
+        tempo = tempo/1000
 
         while tempo > 0:
             self.move_turtle(vx, vy, theta)
@@ -78,14 +78,8 @@ class MovTurtle(Node):
 
             tempo -= 1
             self.get_logger().info('Duração: ' + str(tempo))
-        self.stop_movement()
-
-    def add_action_to_deque(*args):
-        print(args[1])
         
-        # for i in args:
-        #     print(i)
-
+            self.stop_movement()
     
     def mov_deque_manager(self):
 
@@ -97,10 +91,10 @@ class MovTurtle(Node):
 
             print(moviment)
 
-            if self.mov_direction_timer(moviment[0], moviment[1], moviment[2], moviment[3]):
-                self.mov_dq.popleft()
-            else:
-                print("Não foi possível executar o comando")
+            self.mov_direction_timer(moviment[0], moviment[1], moviment[2], moviment[3])
+            
+            self.mov_dq.popleft()
+
 
             time.sleep(1)
         
@@ -114,29 +108,9 @@ class MovTurtle(Node):
 
 
 def main(args=None):
-    # Inicilizar o RCLPY
-    # rclpy.init(args=args)
 
-    # Inicializar a classe
-    # movTurtle = MovTurtle()
-
-    # # movTurtle.mov_direction_timer(0.0, 1.0, 0.0, 3)
-
-    # movTurtle.mov_dq.append("1.0, 1.0, 0.0, 3")
-    # movTurtle.mov_dq.append("3.0, 1.0, 0.0, 5")
-    # movTurtle.mov_dq.append("0.0, 1.0, 0.4, 3")
-    # movTurtle.mov_dq.append("0.5, 1.0, 0.0, 2")
-
-    # movTurtle.mov_deque_manager()]
-    
     cli()
 
-    # # O spin do TurtleControler serve para manter o programa rodando até que seja finalizado
-    # rclpy.spin(movTurtle)
-
-    # # Limpar os nós
-    # movTurtle.destroy_node()
-    # rclpy.shutdown()
 
 if __name__ == "__main__":
     main()
